@@ -1,4 +1,4 @@
-![Bot Logo](2bff2a08-14e5-40a9-8d9f-e0d6f29e5a2d.webp | width=100)
+![Bot Logo](2bff2a08-14e5-40a9-8d9f-e0d6f29e5a2d.webp)
 
 # Bot Anònim de Telegram
 
