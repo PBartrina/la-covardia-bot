@@ -51,4 +51,4 @@ El bot està desplegat a Google Cloud Functions. Per a més informació sobre co
 
 ## Llicència
 
-Aquest projecte està sota la llicència MIT. Consulta el fitxer `LICENSE` per a més detalls. 
+Aquest projecte està sota la llicència Unlicence. Consulta el fitxer `LICENSE` per a més detalls. 
