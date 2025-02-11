@@ -37,14 +37,22 @@ async def handle_update(update: Update):
     if not update.message:
         return
         
-    if update.message.text and update.message.text.startswith('/start'):
-        await bot.send_message(
-            chat_id=update.message.chat.id,
-            text="Hola! Envia'm qualsevol missatge i el publicaré de manera anònima al grup. "
-                 "La teva identitat es mantindrà privada.\n\n"
-                 f"Límit: {MAX_MESSAGES} missatges cada hora."
-        )
-        return
+    if update.message.text:
+        if update.message.text.startswith('/start'):
+            await bot.send_message(
+                chat_id=update.message.chat.id,
+                text="Hola! Envia'm qualsevol missatge i el publicaré de manera anònima al grup. "
+                     "La teva identitat es mantindrà privada.\n\n"
+                     f"Límit: {MAX_MESSAGES} missatges cada hora."
+            )
+            return
+        elif update.message.text.startswith('/codi'):
+            await bot.send_message(
+                chat_id=update.message.chat.id,
+                text="Pots trobar el codi font del bot aquí:\n"
+                     "https://github.com/PBartrina/la-covardia-bot"
+            )
+            return
 
     if update.message.chat.type != 'private':
         return
