@@ -50,8 +50,7 @@ async def handle_update(update: Update):
         return
     
     try:
-        print(f"Processing message from user {update.message.from_user.id}")
-        
+    
         user_id = update.message.from_user.id
         if not check_rate_limit(user_id):
             remaining_minutes = TIME_WINDOW - int((datetime.now() - user_messages[user_id][0]).total_seconds() / 60)
@@ -67,18 +66,17 @@ async def handle_update(update: Update):
         # Check bot's permissions in the group
         try:
             bot_member = await bot.get_chat_member(chat_id=TARGET_GROUP_ID, user_id=bot.id)
-            print(f"Bot permissions in group: {bot_member.to_dict()}")
+
         except Exception as e:
             print(f"Error checking bot permissions: {str(e)}")
             raise
 
         if update.message.text:
-            print(f"Attempting to send text message to group {TARGET_GROUP_ID}")
+
             sent_message = await bot.send_message(
                 chat_id=TARGET_GROUP_ID,
                 text=update.message.text
             )
-            print(f"Message sent successfully with ID: {sent_message.message_id}")
         elif update.message.photo:
             print(f"Attempting to send photo to group {TARGET_GROUP_ID}")
             photo = update.message.photo[-1]
@@ -87,7 +85,7 @@ async def handle_update(update: Update):
                 photo=photo.file_id,
                 caption=update.message.caption
             )
-            print(f"Photo sent successfully with ID: {sent_message.message_id}")
+            print(f"Photo sent successfully")
         elif update.message.document:
             print(f"Attempting to send document to group {TARGET_GROUP_ID}")
             sent_message = await bot.send_document(
@@ -95,7 +93,7 @@ async def handle_update(update: Update):
                 document=update.message.document.file_id,
                 caption=update.message.caption
             )
-            print(f"Document sent successfully with ID: {sent_message.message_id}")
+            print(f"Document sent successfully")
         
         messages_left = MAX_MESSAGES - len(user_messages[user_id])
         await bot.send_message(
