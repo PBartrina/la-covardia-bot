@@ -4,6 +4,7 @@ from telegram import Update, Bot
 import asyncio
 from datetime import datetime, timedelta
 from collections import defaultdict
+import telegram
 
 BOT_TOKEN = os.environ.get('BOT_TOKEN')
 TARGET_GROUP_ID = os.environ.get('TARGET_GROUP_ID')
@@ -43,7 +44,30 @@ async def handle_update(update: Update):
                 chat_id=update.message.chat.id,
                 text="Hola! Envia'm qualsevol missatge i el publicaré de manera anònima al grup. "
                      "La teva identitat es mantindrà privada.\n\n"
-                     f"Límit: {MAX_MESSAGES} missatges cada hora."
+                     f"Límit: {MAX_MESSAGES} missatges cada hora.\n\n"
+                     "Comandes disponibles:\n"
+                     "/ajuda - Mostra aquest missatge\n"
+                     "/codi - Enllaç al codi font\n"
+                     "/quota - Consulta els missatges que et queden"
+            )
+            return
+        elif update.message.text.startswith('/ajuda'):
+            await bot.send_message(
+                chat_id=update.message.chat.id,
+                text="Hola! Envia'm qualsevol missatge i el publicaré de manera anònima al grup. "
+                     "La teva identitat es mantindrà privada.\n\n"
+                     f"Límit: {MAX_MESSAGES} missatges cada hora.\n\n"
+                     "Comandes disponibles:\n"
+                     "/ajuda - Mostra aquest missatge\n"
+                     "/codi - Enllaç al codi font\n"
+                     "/quota - Consulta els missatges que et queden"
+            )
+            return
+        elif update.message.text.startswith('/quota'):
+            messages_left = MAX_MESSAGES - len(user_messages[update.message.from_user.id])
+            await bot.send_message(
+                chat_id=update.message.chat.id,
+                text=f"Et queden {messages_left} missatges en aquesta hora."
             )
             return
         elif update.message.text.startswith('/codi'):
@@ -58,7 +82,7 @@ async def handle_update(update: Update):
         return
     
     try:
-        print(f"Processing message from user")
+        print("Message received")
         
         user_id = update.message.from_user.id
         if not check_rate_limit(user_id):
@@ -80,9 +104,14 @@ async def handle_update(update: Update):
             raise
 
         if update.message.text:
-            print(f"Attempting to send text message to group {TARGET_GROUP_ID}")
-            # Make text bold using Markdown
-            bold_text = f"*{update.message.text}*"
+            print("Message forwarded to group")
+            # Clean potentially problematic characters from messages before sending
+            def clean_message(text):
+                # Remove any Markdown characters that could break formatting
+                return text.replace('*', '').replace('_', '').replace('`', '').replace('[', '').replace(']', '')
+
+            # Then in the send message part:
+            bold_text = f"*{clean_message(update.message.text)}*"
             sent_message = await bot.send_message(
                 chat_id=TARGET_GROUP_ID,
                 text=bold_text,
@@ -90,7 +119,7 @@ async def handle_update(update: Update):
             )
             print(f"Message sent successfully with ID: {sent_message.message_id}")
         elif update.message.photo:
-            print(f"Attempting to send photo to group {TARGET_GROUP_ID}")
+            print("Message forwarded to group")
             photo = update.message.photo[-1]
             # Make caption bold if it exists
             caption = f"*{update.message.caption}*" if update.message.caption else None
@@ -102,7 +131,7 @@ async def handle_update(update: Update):
             )
             print(f"Photo sent successfully")
         elif update.message.document:
-            print(f"Attempting to send document to group {TARGET_GROUP_ID}")
+            print("Message forwarded to group")
             # Make caption bold if it exists
             caption = f"*{update.message.caption}*" if update.message.caption else None
             sent_message = await bot.send_document(
@@ -120,13 +149,20 @@ async def handle_update(update: Update):
                  f"Et queden {messages_left} missatges en aquesta hora."
         )
         
-    except Exception as e:
-        print(f"Error handling message: {str(e)}")
-        error_details = f"Error type: {type(e).__name__}, Message: {str(e)}"
-        print(error_details)
+    except telegram.error.Unauthorized:
         await bot.send_message(
             chat_id=update.message.chat.id,
-            text=f"Ho sento, hi ha hagut un error en publicar el teu missatge. Si us plau, torna-ho a provar."
+            text="No tinc permís per enviar missatges al grup. Contacta amb l'administrador."
+        )
+    except telegram.error.TimedOut:
+        await bot.send_message(
+            chat_id=update.message.chat.id,
+            text="El servidor triga massa a respondre. Torna-ho a provar d'aquí uns minuts."
+        )
+    except Exception as e:
+        await bot.send_message(
+            chat_id=update.message.chat.id,
+            text="Hi ha hagut un error inesperat. Torna-ho a provar més tard."
         )
     finally:
         await bot.shutdown()
