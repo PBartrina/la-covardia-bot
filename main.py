@@ -84,18 +84,30 @@ async def handle_update(update: Update):
             if not feedback_text:
                 await bot.send_message(
                     chat_id=update.message.chat.id,
-                    text="Per enviar feedback, escriu:\n/feedback El teu missatge"
+                    text="Per enviar feedback, escriu:\n/feedback El teu missatge\n\n"
+                         "⚠️ Nota: Per poder gestionar el feedback adequadament, "
+                         "el teu nom d'usuari serà visible pels administradors."
                 )
                 return
                 
             try:
+                # Get user information
+                user = update.message.from_user
+                user_info = f"De: {user.first_name}"
+                if user.username:
+                    user_info += f" (@{user.username})"
+                
                 await bot.send_message(
                     chat_id=ADMIN_ID,
-                    text=f"📬 Nou feedback rebut:\n\n{feedback_text}"
+                    text=f"📬 Nou feedback rebut:\n"
+                         f"{user_info}\n\n"
+                         f"Missatge:\n{feedback_text}"
                 )
                 await bot.send_message(
                     chat_id=update.message.chat.id,
-                    text="Gràcies pel teu feedback! Ha estat enviat als administradors."
+                    text="Gràcies pel teu feedback! Ha estat enviat als administradors.\n\n"
+                         "⚠️ Nota: El teu nom d'usuari s'ha inclòs en el feedback per "
+                         "poder gestionar-lo adequadament."
                 )
             except Exception as e:
                 print(f"Error sending feedback: {str(e)}")
