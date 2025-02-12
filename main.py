@@ -16,11 +16,6 @@ MAX_MESSAGES = 5
 TIME_WINDOW = 60    
 user_messages = defaultdict(list)  
 
-# Add at the top with other global variables
-TOTAL_MESSAGES = 0
-TOTAL_PHOTOS = 0
-TOTAL_DOCUMENTS = 0
-
 def check_rate_limit(user_id: int) -> bool:
     current_time = datetime.now()
     user_messages[user_id] = [
@@ -38,10 +33,6 @@ async def initialize_bot():
     return bot
 
 async def handle_update(update: Update):
-    global TOTAL_MESSAGES
-    global TOTAL_PHOTOS
-    global TOTAL_DOCUMENTS
-    
     bot = await initialize_bot()
     
     if not update.message:
@@ -57,8 +48,7 @@ async def handle_update(update: Update):
                      "Comandes disponibles:\n"
                      "/ajuda - Mostra aquest missatge\n"
                      "/codi - Enllaç al codi font\n"
-                     "/quota - Consulta els missatges que et queden\n"
-                     "/stats - Mostra estadístiques d'ús"
+                     "/quota - Consulta els missatges que et queden"
             )
             return
         elif update.message.text.startswith('/ajuda'):
@@ -70,8 +60,7 @@ async def handle_update(update: Update):
                      "Comandes disponibles:\n"
                      "/ajuda - Mostra aquest missatge\n"
                      "/codi - Enllaç al codi font\n"
-                     "/quota - Consulta els missatges que et queden\n"
-                     "/stats - Mostra estadístiques d'ús"
+                     "/quota - Consulta els missatges que et queden"
             )
             return
         elif update.message.text.startswith('/quota'):
@@ -86,17 +75,6 @@ async def handle_update(update: Update):
                 chat_id=update.message.chat.id,
                 text="Pots trobar el codi font del bot aquí:\n"
                      "https://github.com/PBartrina/la-covardia-bot"
-            )
-            return
-        elif update.message.text.startswith('/stats'):
-            await bot.send_message(
-                chat_id=update.message.chat.id,
-                text="📊 Estadístiques des de l'última actualització del bot:\n\n"
-                     f"• Missatges de text: {TOTAL_MESSAGES}\n"
-                     f"• Fotos: {TOTAL_PHOTOS}\n"
-                     f"• Documents: {TOTAL_DOCUMENTS}\n"
-                     f"• Total: {TOTAL_MESSAGES + TOTAL_PHOTOS + TOTAL_DOCUMENTS}\n\n"
-                     "⚠️ Aquestes estadístiques es reinicien quan s'actualitza el bot."
             )
             return
 
@@ -140,7 +118,6 @@ async def handle_update(update: Update):
                 parse_mode='Markdown'  # Enable Markdown parsing
             )
             print(f"Message sent successfully with ID: {sent_message.message_id}")
-            TOTAL_MESSAGES += 1
         elif update.message.photo:
             print("Message forwarded to group")
             photo = update.message.photo[-1]
@@ -153,7 +130,6 @@ async def handle_update(update: Update):
                 parse_mode='Markdown' if caption else None
             )
             print(f"Photo sent successfully")
-            TOTAL_PHOTOS += 1
         elif update.message.document:
             print("Message forwarded to group")
             # Make caption bold if it exists
@@ -165,7 +141,6 @@ async def handle_update(update: Update):
                 parse_mode='Markdown' if caption else None
             )
             print(f"Document sent successfully with ID: {sent_message.message_id}")
-            TOTAL_DOCUMENTS += 1
         
         messages_left = MAX_MESSAGES - len(user_messages[user_id])
         await bot.send_message(
