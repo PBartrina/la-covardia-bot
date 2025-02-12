@@ -8,6 +8,7 @@ import telegram
 
 BOT_TOKEN = os.environ.get('BOT_TOKEN')
 TARGET_GROUP_ID = os.environ.get('TARGET_GROUP_ID')
+ADMIN_ID = os.environ.get('ADMIN_ID')
 
 print(f"Bot initialized with target group: {TARGET_GROUP_ID}")
 
@@ -48,7 +49,8 @@ async def handle_update(update: Update):
                      "Comandes disponibles:\n"
                      "/ajuda - Mostra aquest missatge\n"
                      "/codi - Enllaç al codi font\n"
-                     "/quota - Consulta els missatges que et queden"
+                     "/quota - Consulta els missatges que et queden\n"
+                     "/feedback - Envia un suggeriment als administradors"
             )
             return
         elif update.message.text.startswith('/ajuda'):
@@ -76,6 +78,31 @@ async def handle_update(update: Update):
                 text="Pots trobar el codi font del bot aquí:\n"
                      "https://github.com/PBartrina/la-covardia-bot"
             )
+            return
+        elif update.message.text.startswith('/feedback'):
+            feedback_text = update.message.text[9:].strip()  # Remove '/feedback ' from the message
+            if not feedback_text:
+                await bot.send_message(
+                    chat_id=update.message.chat.id,
+                    text="Per enviar feedback, escriu:\n/feedback El teu missatge"
+                )
+                return
+                
+            try:
+                await bot.send_message(
+                    chat_id=ADMIN_ID,
+                    text=f"📬 Nou feedback rebut:\n\n{feedback_text}"
+                )
+                await bot.send_message(
+                    chat_id=update.message.chat.id,
+                    text="Gràcies pel teu feedback! Ha estat enviat als administradors."
+                )
+            except Exception as e:
+                print(f"Error sending feedback: {str(e)}")
+                await bot.send_message(
+                    chat_id=update.message.chat.id,
+                    text="Hi ha hagut un error enviant el feedback. Torna-ho a provar més tard."
+                )
             return
 
     if update.message.chat.type != 'private':
