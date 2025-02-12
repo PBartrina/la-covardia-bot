@@ -62,7 +62,8 @@ async def handle_update(update: Update):
                      "Comandes disponibles:\n"
                      "/ajuda - Mostra aquest missatge\n"
                      "/codi - Enllaç al codi font\n"
-                     "/quota - Consulta els missatges que et queden"
+                     "/quota - Consulta els missatges que et queden\n"
+                     "/feedback - Envia un suggeriment als administradors"
             )
             return
         elif update.message.text.startswith('/quota'):

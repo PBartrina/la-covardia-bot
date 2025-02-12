@@ -1,17 +1,41 @@
-
 <img src="2bff2a08-14e5-40a9-8d9f-e0d6f29e5a2d.webp" width="100" height="100" alt="Bot Logo">
 
+# La Covardia Bot
 
-# Bot Anònim de Telegram
-
-Un bot de Telegram que permet als usuaris enviar missatges anònims a un grup específic.
+Un bot de Telegram que permet enviar missatges anònims a un grup.
 
 ## Característiques
 
-- 🔒 Anonimat complet dels missatges
-- 📝 Suport per a text, fotos i documents
-- ⏰ Sistema de límit de missatges (5 missatges per hora)
-- 🗣️ Interfície completament en català
+- Envia missatges anònims al grup
+- Suporta text, fotos i documents
+- Límit de 5 missatges per hora per usuari
+- Interfície en català
+- Missatges en negreta al grup
+
+## Comandes
+
+- `/start` - Inicia el bot i mostra l'ajuda
+- `/ajuda` - Mostra el missatge d'ajuda
+- `/codi` - Mostra l'enllaç al codi font
+- `/quota` - Consulta els missatges que et queden en aquesta hora
+- `/feedback` - Envia un suggeriment als administradors (el nom d'usuari serà visible)
+
+## Privacitat
+
+- Els missatges es publiquen de forma anònima
+- No es guarda cap registre dels usuaris
+- La comanda `/feedback` inclou el nom d'usuari per gestió
+
+## Desenvolupament
+
+Bot desenvolupat amb:
+- Python
+- python-telegram-bot
+- Google Cloud Functions
+
+## Llicència
+
+[MIT License](LICENSE)
 
 ## Com utilitzar-lo
 
@@ -32,12 +56,6 @@ Un bot de Telegram que permet als usuaris enviar missatges anònims a un grup es
 - 📸 Fotos (amb o sense text)
 - 📎 Documents
 
-## Privacitat
-
-- Els missatges són completament anònims
-- No es guarda cap registre dels missatges enviats
-- La identitat dels usuaris mai es comparteix amb el grup
-
 ## Requisits tècnics (per a desenvolupadors)
 
 - Python 3.9
@@ -47,8 +65,4 @@ Un bot de Telegram que permet als usuaris enviar missatges anònims a un grup es
 
 ## Desplegament
 
-El bot està desplegat a Google Cloud Functions. Per a més informació sobre com desplegar la teva pròpia instància, consulta la documentació de Google Cloud.
-
-## Llicència
-
-Aquest projecte està sota la llicència Unlicence. Consulta el fitxer `LICENSE` per a més detalls. 
+El bot està desplegat a Google Cloud Functions. Per a més informació sobre com desplegar la teva pròpia instància, consulta la documentació de Google Cloud. 
